@@ -50,7 +50,7 @@ class PhaserHexGridRenderer extends HexGridRenderer {
 
     // override this if necessary
     onDownSprite(sprite, pointer, vc, props) {
-        console.log(`onDownSprite : pixels = ${pointer.position.toString()} : coords = ${vc}`);
+        //console.log(`onDownSprite : pixels = ${pointer.position.toString()} : coords = ${vc}`);
     }
 }
 

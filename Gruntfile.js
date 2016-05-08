@@ -7,8 +7,7 @@ module.exports = function(grunt) {
     grunt.initConfig({
         babel: {
             options: {
-                sourceMap: true,
-                presets: ['es2015']
+                sourceMap: true
             },
             dist: {
                 files: [{

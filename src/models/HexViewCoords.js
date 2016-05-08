@@ -107,6 +107,8 @@ class HexViewCoords {
         let localY = (this.hexLongRadius() - inset) * Math.sin(rad);
         let rotated = this.applyRotation([localX, localY]);
 
+
+        // TODO this has a bug. the points are centered aroud the right spot, but are not locally rotated by the alpha.
         if (type == LOCAL) {
             return {
                 // x: rotated[0],
