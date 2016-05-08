@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "description": "A modular, general-purpose hexagonal grid library",
   "files": [
-    "dist",
-    "phaser.js"
+    "dist"
   ],
   "main": "dist/index.js",
   "scripts": {
