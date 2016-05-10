@@ -1,9 +1,10 @@
 {
   "name": "adroit-hex-grid",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A modular, general-purpose hexagonal grid library",
   "files": [
-    "dist"
+    "dist",
+    "phaser.js"
   ],
   "main": "dist/index.js",
   "scripts": {

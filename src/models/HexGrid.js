@@ -15,137 +15,139 @@ var _ = require('lodash');
 const data = Symbol();
 
 class HexGrid {
-    
-    constructor(overrides) {
-        var defaults = {
-            datastore: DefaultDatastore
-        };
 
-        let options = _.assign({}, defaults, overrides);
-        
-        this[data] = new options.datastore();
-    }
+  constructor(overrides) {
+    var defaults = {
+      datastore: DefaultDatastore
+    };
 
-    
-    setHexProperties(hc, properties) {
-        let coords = HexCoords.get(hc);
-        return this[data].setHexProperties(coords, properties);
-    }
-    
-    setHexProperty(hc, name, value) {
-        let coords = HexCoords.get(hc);
-        let props = {};
-        props[name] = value;
-        return this[data].setHexProperties(coords, props);
-    }
+    let options = _.assign({}, defaults, overrides);
 
-    updateHexProperties(hc, properties) {
-        let coords = HexCoords.get(hc);
-        return this[data].updateHexProperties(coords, properties);
-    }
+    this[data] = new options.datastore();
+  }
 
-    updateHexProperty(hc, name, value) {
-        let coords = HexCoords.get(hc);
-        let props = {};
-        props[name] = value;
-        return this[data].updateHexProperties(coords, props);
-    }
 
-    
-    getHexProperties(hc) {
-        let coords = HexCoords.get(hc);
-        return this[data].getHexProperties(coords);
-    }
+  setHexProperties(hc, properties) {
+    let coords = HexCoords.get(hc);
+    return this[data].setHexProperties(coords, properties);
+  }
 
-    getHexProperty(hc, prop) {
-        let coords = HexCoords.get(hc);
-        return this[data].getHexProperties(coords)[prop];
-    }
+  setHexProperty(hc, name, value) {
+    let coords = HexCoords.get(hc);
+    let props = {};
+    props[name] = value;
+    return this[data].setHexProperties(coords, props);
+  }
 
-    
-    removeHexProperties(hc) {
-        let coords = HexCoords.get(hc);
-        return this[data].removeHexProperties(coords);
-    }
+  updateHexProperties(hc, properties) {
+    let coords = HexCoords.get(hc);
+    return this[data].updateHexProperties(coords, properties);
+  }
 
-    removeHexProperty(hc, name) {
-        let props = this.getHexProperties(hc);
-        delete props[name];
-        return this.setHexProperties(hc, props);
-    }
+  updateHexProperty(hc, name, value) {
+    let coords = HexCoords.get(hc);
+    let props = {};
+    props[name] = value;
+    return this[data].updateHexProperties(coords, props);
+  }
 
-    // should return a 2D array like:
-    // [
-    //  [HexCoords(), {properties}],
-    //  [HexCoords(), {properties}],
-    //  ...
-    // ]
-    getAllHexProperties() {
-        return this[data].getAllHexProperties();
-    }
 
-    
+  getHexProperties(hc) {
+    let coords = HexCoords.get(hc);
+    return this[data].getHexProperties(coords);
+  }
 
-    //
-    // returns the unique ID of the occupant, so the caller can manipulate it,
-    // remove it, etc.
-    //
-    addOccupant(object, hc) {
-        let coords = HexCoords.get(hc);
-        return this[data].addOccupant(coords, object);
-    }
+  getHexProperty(hc, prop) {
+    let coords = HexCoords.get(hc);
+    return this[data].getHexProperties(coords)[prop];
+  }
 
-    getOccupant(occupantId, deserializeCallback = null) {
-        let doc = this[data].getOccupant(occupantId);
-        if (deserializeCallback) {
-            doc = deserializeCallback(doc);
-        }
-        return doc;
-    }
 
-    removeOccupant(occupantId) {
-        return this[data].removeOccupant(occupantId);
-    }
+  removeHexProperties(hc) {
+    let coords = HexCoords.get(hc);
+    return this[data].removeHexProperties(coords);
+  }
 
-    moveOccupant(occupantId, newCoords) {        
-        return this[data].moveOccupant(occupantId, newCoords);
-    }
+  removeHexProperty(hc, name) {
+    let props = this.getHexProperties(hc);
+    delete props[name];
+    return this.setHexProperties(hc, props);
+  }
 
-    getOccupantLocation(occupantId) {
-        return this[data].getOccupantLocation(occupantId);
-    }
+  /**
+   * @return a 2D array like:
+   * [
+   *  [HexCoords(), {...properties}],
+   *  [HexCoords(), {...properties}],
+   *  ...
+   * ]
+   */
+  getAllHexProperties() {
+    return this[data].getAllHexProperties();
+  }
 
-    getAllOccupants(cb) {
-        return this[data].getAllOccupants();
+
+
+  /**
+   * returns the unique ID of the occupant, so the caller can manipulate it,
+   * remove it, etc.
+   */
+  addOccupant(object, hc) {
+    let coords = HexCoords.get(hc);
+    return this[data].addOccupant(coords, object);
+  }
+
+  getOccupant(occupantId, deserializeCallback = null) {
+    let doc = this[data].getOccupant(occupantId);
+    if (deserializeCallback) {
+      doc = deserializeCallback(doc);
     }
+    return doc;
+  }
+
+  removeOccupant(occupantId) {
+    return this[data].removeOccupant(occupantId);
+  }
+
+  moveOccupant(occupantId, newCoords) {
+    return this[data].moveOccupant(occupantId, newCoords);
+  }
+
+  getOccupantLocation(occupantId) {
+    return this[data].getOccupantLocation(occupantId);
+  }
+
+  getAllOccupants(cb) {
+    return this[data].getAllOccupants();
+  }
 
 }
 
 
 HexGrid.buildRectangle = function(xSize, ySize, getHexPropertiesCallback) {
-    var grid = new HexGrid();
+  var grid = new HexGrid();
 
-    var currentRow = 0;
-    var currentCol = 0;
+  var currentRow = 0;
+  var currentCol = 0;
 
-    while (currentRow < ySize) {
-        while (currentCol < xSize) {
-            let offset = 0;
-            
-            if (currentRow % 2 == 0) {
-                offset = currentRow / 2;
-            } else {
-                offset = (currentRow - 1) / 2;
-            }
+  while (currentRow < ySize) {
+    while (currentCol < xSize) {
+      let offset = 0;
 
-            let hc = HexCoords.get([currentCol - offset, currentRow]);
-            grid.setHexProperties(hc, getHexPropertiesCallback(hc));
-            currentCol += 1;
-        }
-        currentCol = 0;
-        currentRow += 1;
+      if (currentRow % 2 == 0) {
+        offset = currentRow / 2;
+      } else {
+        offset = (currentRow - 1) / 2;
+      }
+
+      let hc = HexCoords.get([currentCol - offset, currentRow]);
+      grid.setHexProperties(hc, getHexPropertiesCallback(hc));
+      currentCol += 1;
     }
-    return grid;
+    currentCol = 0;
+    currentRow += 1;
+  }
+  return grid;
 };
 
 

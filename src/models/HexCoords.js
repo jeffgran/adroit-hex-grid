@@ -1,4 +1,5 @@
-var _ = require('lodash');
+import _ from 'lodash';
+import HexBearing from './HexBearing';
 
 class HexCoords {
 
@@ -55,18 +56,30 @@ class HexCoords {
   }
 
 
-  // neighbor: (bearing) ->
-  //   @map.hexAt(@neighboring_coords(bearing)...)
 
+  neighbor(bearing) {
+    HexBearing.assert(bearing);
 
-  // neighboring_coords: (dir) ->
-  //   switch dir
-  //     when 0 then [@q, @r-1]
-  //     when 1 then [@q+1, @r-1]
-  //     when 2 then [@q+1, @r]
-  //     when 3 then [@q, @r+1]
-  //     when 4 then [@q-1, @r+1]
-  //     when 5 then [@q-1, @r]
+    switch (bearing) {
+    case HexBearing.Q:
+      return HexCoords.get([this.q+1, this.r]);
+    case HexBearing.R:
+      return HexCoords.get([this.q, this.r+1]);
+    case HexBearing.S:
+      return HexCoords.get([this.q-1, this.r+1]);
+    case HexBearing._Q:
+      return HexCoords.get([this.q-1, this.r]);
+    case HexBearing._R:
+      return HexCoords.get([this.q, this.r-1]);
+    case HexBearing._S:
+      return HexCoords.get([this.q+1, this.r-1]);
+    default:
+      throw "not possible";
+    }
+  }
+
+  // TODO Next: we need isNeighbor for moveTowards to work.
+  // maybe implement allNeighbors as getRing(distance)?
 
   // all_neighboring_coords: () ->
   //   [
@@ -79,22 +92,27 @@ class HexCoords {
   //   ]
 
 
-  // isNeighbor: (otherHex) ->
-  //   ret = null
-  //   for dir in [0..5]
-  //     n = @neighbor(dir)
-  //     if n? && n.is(otherHex)
-  //       ret = dir
-  //   ret
+  /**
+   * @param {HexCoords} otherCoords
+   * @return {bool|number} if otherCoords a direct neighbor to this, return the bearing from this to otherCoords. Otherwise return false.
+   */
+  isNeighbor(otherCoords) {
+    let ret = false;
+    HexBearing.all.forEach(b => {
+      if (this.neighbor(b).is(otherCoords)) {
+        ret = b;
+      }
+    });
+    return ret;
+  }
+
+  is(otherCoords) {
+    return ((this.q == otherCoords.q) && (this.r == otherCoords.r));
+  }
 
   // oppositeNeighbor: (hex) ->
   //   if (dir = @isNeighbor(hex))?
   //     @neighbor(Hex.oppositeDir(dir))
-
-  // is: (another) ->
-  //   (another.q is @q) and (another.r is @r)
-  // isNot: (another) ->
-  //   !(@is(another))
 
   toString() {
     return `<HexCoords Q: ${this.q}, R: ${this.r}>`;

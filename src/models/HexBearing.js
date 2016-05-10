@@ -1,12 +1,12 @@
 const HexBearing = {
 
   // compass direction based on hexgrid alpha = 0
-  Q: 0, // east
-  R: 1, // south southeast
-  S: 2, // south southwest
-  _Q: 3, // west
-  _R: 4, // north northwest
-  _S: 5, // north northeast
+  Q: 1, // east
+  R: 2, // south southeast
+  S: 3, // south southwest
+  _Q: 4, // west
+  _R: 5, // north northwest
+  _S: 6, // north northeast
 
   assert(bearing) {
     if (validBearings.includes(bearing)) return true;
@@ -29,7 +29,7 @@ const HexBearing = {
    */
   next(bearing, by = 1) {
     HexBearing.assert(bearing);
-    const index = wrapIndex(bearing + by);
+    const index = wrapIndex(validBearings.indexOf(bearing) + by);
     return validBearings[index];
   },
 
@@ -42,9 +42,7 @@ const HexBearing = {
     return HexBearing.next(bearing, -(by));
   },
 
-
-
-  nearestRotationDirection(fromBearing, toBearing) {
+  step(fromBearing, toBearing) {
     const diff = Math.abs(toBearing - fromBearing);
     let result;
     if (diff == 0) {
@@ -60,7 +58,6 @@ const HexBearing = {
 
 
 };
-export default HexBearing;
 
 
 const validBearings = [
@@ -79,3 +76,7 @@ function wrapIndex(i) {
   }
   return res;
 }
+
+HexBearing.all = validBearings;
+
+export default HexBearing;

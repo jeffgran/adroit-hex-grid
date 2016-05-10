@@ -63,27 +63,23 @@ describe("HexBearing", function() {
       expect(HexBearing.previous(HexBearing.Q, 5)).toBe(HexBearing.R);
     });
 
-    describe("nearestRotationDirection", () => {
+    it("returns the same direction if 'from' and 'to' are the same", () => {
+      expect(HexBearing.step(HexBearing.Q, HexBearing.Q)).toBe(HexBearing.Q);
+    });
 
-      it("returns the same direction if 'from' and 'to' are the same", () => {
-        expect(HexBearing.nearestRotationDirection(HexBearing.Q, HexBearing.Q)).toBe(HexBearing.Q);
-      });
+    it("returns the to direction if the 'to' direction is only one unit away", () => {
+      expect(HexBearing.step(HexBearing.Q, HexBearing.R)).toBe(HexBearing.R);
+      expect(HexBearing.step(HexBearing.Q, HexBearing._S)).toBe(HexBearing._S);
+    });
 
-      it("returns the to direction if the 'to' direction is only one unit away", () => {
-        expect(HexBearing.nearestRotationDirection(HexBearing.Q, HexBearing.R)).toBe(HexBearing.R);
-        expect(HexBearing.nearestRotationDirection(HexBearing.Q, HexBearing._S)).toBe(HexBearing._S);
-      });
+    it("returns the direction in-between if the ; direction is 2 units away", () => {
+      expect(HexBearing.step(HexBearing.Q, HexBearing.S)).toBe(HexBearing.R);
+      expect(HexBearing.step(HexBearing.Q, HexBearing._R)).toBe(HexBearing._S);
+    });
 
-      it("returns the direction in-between if the ; direction is 2 units away", () => {
-        expect(HexBearing.nearestRotationDirection(HexBearing.Q, HexBearing.S)).toBe(HexBearing.R);
-        expect(HexBearing.nearestRotationDirection(HexBearing.Q, HexBearing._R)).toBe(HexBearing._S);
-      });
-
-      it("prefers clockwise if the 'to' direction is 3 units away", () => {
-        expect(HexBearing.nearestRotationDirection(HexBearing.Q, HexBearing._Q)).toBe(HexBearing.R);
-        expect(HexBearing.nearestRotationDirection(HexBearing.R, HexBearing._R)).toBe(HexBearing.S);
-      });
-
+    it("prefers clockwise if the 'to' direction is 3 units away", () => {
+      expect(HexBearing.step(HexBearing.Q, HexBearing._Q)).toBe(HexBearing.R);
+      expect(HexBearing.step(HexBearing.R, HexBearing._R)).toBe(HexBearing.S);
     });
 
   });
