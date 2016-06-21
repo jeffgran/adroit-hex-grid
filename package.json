@@ -1,6 +1,7 @@
 {
   "name": "adroit-hex-grid",
   "version": "0.0.2",
+  "license": "ISC",
   "description": "A modular, general-purpose hexagonal grid library",
   "files": [
     "dist",
