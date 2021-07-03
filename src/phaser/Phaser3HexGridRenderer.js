@@ -39,6 +39,13 @@ class Phaser3HexGridRenderer extends HexGridRenderer {
     });
 
   }
+
+  addSprite(spriteKey, scale = 1) {
+    const s = this.phaserScene.add.sprite(0, 0, spriteKey);
+    const size = (this.hexLongRadius * 2) * scale;
+    s.setDisplaySize(size, size);
+    return s;
+  }
 }
 
 export default Phaser3HexGridRenderer;
