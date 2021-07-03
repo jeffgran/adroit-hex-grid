@@ -1,6 +1,8 @@
 # to clean and build:
 
-`$ grunt`
+    $ yarn global add grunt
+
+    $ yarn run build
 
 # to start test runner:
 

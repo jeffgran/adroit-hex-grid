@@ -1,7 +1,7 @@
 import HexCoords from "../models/HexCoords.js";
 
-var loki = require('lokijs');
-var _ = require('lodash');
+import loki from 'lokijs';
+import _ from 'lodash';
 
 const hexes = Symbol();
 const occupants = Symbol();
