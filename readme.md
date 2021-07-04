@@ -3,6 +3,10 @@
     $ yarn global add grunt
 
     $ yarn run build
+    
+or
+    
+    $ yarn run watch
 
 # to start test runner:
 

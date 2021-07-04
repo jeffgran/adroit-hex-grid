@@ -79,17 +79,17 @@ class HexCoords {
   }
 
   // TODO Next: we need isNeighbor for moveTowards to work.
-  // maybe implement allNeighbors as getRing(distance)?
-
-  // all_neighboring_coords: () ->
-  //   [
-  //     @neighboring_coords(0),
-  //     @neighboring_coords(1),
-  //     @neighboring_coords(2),
-  //     @neighboring_coords(3),
-  //     @neighboring_coords(4),
-  //     @neighboring_coords(5)
-  //   ]
+  // TODO maybe implement allNeighbors as getRing(distance)?
+  allNeighbors() {
+    return [
+      this.neighbor(HexBearing.Q),
+      this.neighbor(HexBearing.R),
+      this.neighbor(HexBearing.S),
+      this.neighbor(HexBearing._Q),
+      this.neighbor(HexBearing._R),
+      this.neighbor(HexBearing._S)
+    ];
+  }
 
 
   /**
@@ -114,6 +114,81 @@ class HexCoords {
   //   if (dir = @isNeighbor(hex))?
   //     @neighbor(Hex.oppositeDir(dir))
 
+  // A* pathfinding
+  pathTo(toHex) {
+    const openNodes = new NodeSet([this]);
+    const closedNodes = new NodeSet([]);
+
+    let currentNode = this;
+    let stop = false;
+    let ctr = 0
+    while(!stop) {
+      ctr++;
+      /* console.log(`currentNode: ${currentNode.toString()}`)
+       * console.log(`neighbors: ${currentNode.allNeighbors()}`)
+       * console.log(`openNodes: ${openNodes.nodes}`)
+       * console.log(`closedNodes: ${closedNodes.nodes}`) */
+      closedNodes.add(currentNode);
+      openNodes.remove(currentNode);
+
+      if (currentNode == Infinity) {
+        return null;
+      }
+
+      if (currentNode.is(toHex) || ctr == 100) {
+        stop = true;
+        break;
+      }
+
+      const nextNodes = _.filter(currentNode.allNeighbors(), (n) => {
+        //!closedNodes.contains(n) && n.isWalkable() && (n.is(toHex) || !n.isOccupied())
+        return !closedNodes.contains(n)
+      });
+
+      //console.log(`nextNodes: ${nextNodes}`);
+
+      for (let node of nextNodes) {
+        let G = 0;
+        let n = node;
+        while (n.parentNode) {
+          /* if (n.isOccupied()) {
+           *   G += 5 // artificial movement "tax" for occupied spaces
+           * } else { */
+          G++;
+          //}
+          n = n.parentNode;
+        }
+
+        if (!node.G || (node.G > G)) {
+          node.G = G;
+          node.parentNode = currentNode;
+        }
+        openNodes.add(node);
+
+        node.H = (Math.abs(node.q-toHex.q) + Math.abs(node.r-toHex.r))
+        node.F = node.G + node.H;
+      }
+      currentNode = _.minBy(openNodes.nodes, node => node.F);
+    }
+
+    const ret = [];
+    while (!currentNode.is(this)) {
+      ret.push(currentNode)
+      currentNode = currentNode.parentNode;
+    }
+
+    // hmm, do i need to clear this out? seems to be working without this.
+    /* for (let h of this.hexes) {
+     *   h.H = null
+     *   h.F = null
+     *   h.G = null
+     *   h.parentNode = null
+     * } */
+
+    return ret.reverse()
+  }
+
+
   toString() {
     return `<HexCoords Q: ${this.q}, R: ${this.r}>`;
   }
@@ -129,3 +204,34 @@ class HexCoords {
 }
 
 export default HexCoords;
+
+class NodeSet {
+  constructor(nodes) {
+    this.array = []
+    this.nodes = nodes
+    for (let node of this.nodes) {
+      this.add(node)
+    }
+  }
+
+  add(node) {
+    if (!this.contains(node)) {
+      if (!this.array[node.q]) {
+       this.array[node.q] = [];
+      }
+      this.array[node.q][node.r] = true;
+      this.nodes.push(node);
+    }
+  }
+
+  remove(node) {
+    if (this.array[node.q] && this.array[node.q][node.r]) {
+      this.array[node.q][node.r] = null;
+      this.nodes = _.reject(this.nodes, n => n.is(node));
+    }
+  }
+
+  contains(node) {
+    return this.array[node.q] && this.array[node.q][node.r];
+  }
+}
