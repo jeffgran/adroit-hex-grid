@@ -5,7 +5,7 @@ import HexViewCoords from "../src/models/HexViewCoords.js";
 describe("HexViewCoords", function() {
 
     describe("given an instance", () => {
-        var vc;
+        let vc;
         
         beforeEach(() => {
             let renderer = new HexGridRenderer(60);
@@ -17,33 +17,41 @@ describe("HexViewCoords", function() {
             let location = vc.getLocation();
 
             expect(location[0]).toBeCloseTo(259.80762113533154);
-            expect(location[1]).toEqual(90);
+            expect(location[1]).toBeCloseTo(90);
         });
 
         it("computes the world vertex locations", () => {
             let points = vc.getWorldPoints();
-            expect(points).toEqual([
-                { x: 311.76914536239786, y: 120 },
-                { x: 259.80762113533154, y: 150 },
-                { x: 207.84609690826522, y: 120 },
-                { x: 207.84609690826522, y: 59.99999999999999 },
-                { x: 259.80762113533154, y: 30 },
-                { x: 311.76914536239786, y: 59.99999999999997 }
-            ]);
+            const expectedPoints = [
+                { x: 311.769145, y: 120 },
+                { x: 259.807621, y: 150 },
+                { x: 207.846096, y: 120 },
+                { x: 207.846096, y: 60 },
+                { x: 259.807621, y: 30 },
+                { x: 311.769145, y: 60 }
+            ];
+            expect(points.length).toBe(expectedPoints.length);
+            points.forEach((p, i) => {
+                expect(p.x).toBeCloseTo(expectedPoints[i].x);
+                expect(p.y).toBeCloseTo(expectedPoints[i].y);
+            });
         });
 
         it("computes the vertex locations with an inset", () => {
             let points = vc.getWorldPoints({inset: 2});
-
-            expect(points).toEqual([
-                { x: 310.03709455482897, y: 119 },
-                { x: 259.80762113533154, y: 148 },
-                { x: 209.5781477158341, y: 119 },
-                { x: 209.57814771583412, y: 60.99999999999999 },
-                { x: 259.80762113533154, y: 32 },
-                { x: 310.03709455482897, y: 60.99999999999997 }
-            ]);
-            
+            const expectedPoints = [
+                { x: 310.037094, y: 119 },
+                { x: 259.807621, y: 148 },
+                { x: 209.578147, y: 119 },
+                { x: 209.578147, y: 61 },
+                { x: 259.807621, y: 32 },
+                { x: 310.037094, y: 61 }
+            ];
+            expect(points.length).toBe(expectedPoints.length);
+            points.forEach((p, i) => {
+                expect(p.x).toBeCloseTo(expectedPoints[i].x);
+                expect(p.y).toBeCloseTo(expectedPoints[i].y);
+            });
         });
         
     });

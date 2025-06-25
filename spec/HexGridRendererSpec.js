@@ -10,7 +10,7 @@ describe("HexGridRenderer", function() {
     });
 
     describe("given a renderer", () => {
-        var grid, renderer;
+        let grid, renderer;
         
         beforeEach(() => {
             grid = new HexGrid();
@@ -29,21 +29,21 @@ describe("HexGridRenderer", function() {
     });
 
     describe("given a renderer with a populated grid", () => {
-        var grid, renderer;
+        let grid, renderer;
         
         beforeEach(() => {
             grid = new HexGrid();
             grid.setHexProperties([0, 0], {"color" : "green"});
             grid.setHexProperties([0, 1], {"color" : "red"});
             renderer = new HexGridRenderer(60);
-            renderer.renderHex = function(hc, props) { throw "${hc} ${props}"; };
+            renderer.renderHex = function(hc, props) {};
         });
 
         it("render calls the render function with each coords/properties pair", () => {
-            spyOn(renderer, 'renderHex');
+            const renderHexSpy = jest.spyOn(renderer, 'renderHex');
             renderer.render(grid);
-            expect(renderer.renderHex).toHaveBeenCalledWith(jasmine.any(HexViewCoords), {"color" : "green"});
-            expect(renderer.renderHex).toHaveBeenCalledWith(jasmine.any(HexViewCoords), {"color" : "red"});
+            expect(renderHexSpy).toHaveBeenCalledWith(expect.any(HexViewCoords), {"color" : "green"});
+            expect(renderHexSpy).toHaveBeenCalledWith(expect.any(HexViewCoords), {"color" : "red"});
         });
         
     });
