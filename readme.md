@@ -8,9 +8,9 @@ or
     
     $ yarn run watch
 
-# to start test runner:
+# to run tests:
 
-`$ karma start`
+`$ yarn run test`
 
 # to use in another project
 
